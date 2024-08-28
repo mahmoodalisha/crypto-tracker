@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-const axios = require("axios");
+import axios from "axios";
 
 const cryptoApiHeaders = {
   "x-rapidapi-host": "coinranking1.p.rapidapi.com",
-  "x-rapidapi-key": "2902955614msha80aa2c52d1724fp1ca1d8jsn379f96e15fc2",
+  "x-rapidapi-key": process.env.REACT_APP_RAPIDAPI_KEY,
 };
+
 const createRequest = (url) => ({ url, headers: cryptoApiHeaders });
 
 export const cryptoApi = createApi({
@@ -21,10 +22,9 @@ export const cryptoApi = createApi({
 
     getCryptoHistory: builder.query({
       query: ({ coinId, timeperiod }) =>
-        createRequest(`coin/${coinId}/history?timeperiod=${timeperiod}`),
+        createRequest(`/coin/${coinId}/history?timeperiod=${timeperiod}`),
     }),
 
-    // Note: To access this endpoint you need premium plan
     getExchanges: builder.query({
       query: () => createRequest("/exchanges"),
     }),
@@ -37,15 +37,14 @@ export const fetchCryptoAPI = async (props) => {
   const options = {
     method: "GET",
     headers: {
-      "X-RapidAPI-Key": "2902955614msha80aa2c52d1724fp1ca1d8jsn379f96e15fc2",
+      "X-RapidAPI-Key": process.env.REACT_APP_RAPIDAPI_KEY,
       "X-RapidAPI-Host": "coinranking1.p.rapidapi.com",
     },
   };
 
   try {
     const response = await fetch(url, options);
-    const result = await response.json(); // Parse response as JSON
-    // console.log(result);
+    const result = await response.json();
     return result;
   } catch (error) {
     console.error(error);
